@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_URI} !\.well-known/acme-challenge
+    RewriteRule !\.(webp|js|gif|jpg|jpeg|png|svg|css|txt|scss|woff|ttf|eot|woff2|pdf|xml|txt|ico)$ public/index.php [L]
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_URI} !\.well-known/acme-challenge
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

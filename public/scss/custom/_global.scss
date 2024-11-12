@@ -1,0 +1,38 @@
+#select-all-table{
+    &.form-check-input:checked, &.form-check-input[type=checkbox]:indeterminate {
+        border-color: var(--bs-white);
+    }
+}
+
+.flatpickr-calendar{
+    &.arrowTop{
+        &:before {
+            border-bottom-color: var(--bs-border-color);
+        }
+
+        &::after{
+            border-bottom-color: var(--bs-border-color);
+        }
+    }
+
+    &.hasTime{
+        .flatpickr-time{
+            border-top: 1px solid var(--bs-border-color);
+        }
+    }
+
+}
+
+.multiselect{
+    input.multiselect-tags-search{
+        background: var(--bs-gray-900);
+    }
+}
+
+.input-select-image-box{
+    margin-bottom: 0 !important;
+}
+
+.form-logo{
+    width: 130px;
+}

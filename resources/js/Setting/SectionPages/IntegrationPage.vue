@@ -1,0 +1,250 @@
+<template>
+  <form @submit="formSubmit">
+    <div>
+      <CardTitle :title="$t('setting_sidebar.lbl_integration')" icon="fa-solid fa-sliders"></CardTitle>
+    </div>
+    <div class="form-group border-bottom pb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <label class="form-label m-0 fw-normal" for="category-is_google_login">{{ $t('setting_integration_page.lbl_google_login') }} </label>
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="is_google_login" :checked="is_google_login == 1 ? true : false" name="is_google_login" id="category-is_google_login" type="checkbox" v-model="is_google_login" />
+        </div>
+      </div>
+    </div>
+
+    
+    <!-- <div class="form-group border-bottom pb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <label class="form-label m-0 fw-normal" for="category-is_custom_webhook_notification">{{ $t('setting_integration_page.lbl_webhook') }} </label>
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="is_custom_webhook_notification" :checked="is_custom_webhook_notification == 1 ? true : false" name="is_custom_webhook_notification" id="category-is_custom_webhook_notification" type="checkbox" v-model="is_custom_webhook_notification" />
+        </div>
+      </div>
+    </div>
+    <div v-if="is_custom_webhook_notification == 1">
+      <div class="row">
+        <div class="col-md-6">
+          <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_integration_page.lbl_custom_webhook_content_key')" placeholder="" v-model="custom_webhook_content_key" :error-message="errors['custom_webhook_content_key']" :error-messages="errorMessages['custom_webhook_content_key']"></InputField>
+        </div>
+        <div class="col-md-6">
+          <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_integration_page.lbl_custom_webhook_url')" placeholder="" v-model="custom_webhook_url" :error-message="errors['custom_webhook_url']" :error-messages="errorMessages['custom_webhook_url']"></InputField>
+        </div>
+      </div>
+    </div> -->
+    <div class="form-group border-bottom pb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <label class="form-label m-0 fw-normal" for="category-is_map_key">{{ $t('setting_integration_page.lbl_google') }}</label>
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="is_map_key" :checked="is_map_key == 1 ? true : false" name="is_map_key" id="category-is_map_key" type="checkbox" v-model="is_map_key" />
+        </div>
+      </div>
+    </div>
+    <div v-if="is_map_key == 1">
+      <div class="row">
+        <div class="col-md-6">
+          <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_integration_page.lbl_google_key')" placeholder="" v-model="google_maps_key" :error-message="errors['google_maps_key']" :error-messages="errorMessages['google_maps_key']"></InputField>
+        </div>
+      </div>
+    </div>
+    <div class="form-group border-bottom pb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <label class="form-label m-0 fw-normal" for="category-is_application_link">{{ $t('setting_integration_page.lbl_application') }}</label>
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="is_application_link" :checked="is_application_link == 1 ? true : false" name="is_application_link" id="category-is_application_link" type="checkbox" v-model="is_application_link" />
+        </div>
+      </div>
+    </div>
+    <div v-if="is_application_link == 1">
+      <div class="row">
+        <div class="col-md-6">
+          <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_integration_page.lbl_playstore')" placeholder="" v-model="customer_app_play_store" :error-message="errors['customer_app_play_store']" :error-messages="errorMessages['customer_app_play_store']"></InputField>
+        </div>
+        <div class="col-md-6">
+          <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_integration_page.lbl_appstore')" placeholder="" v-model="customer_app_app_store" :error-message="errors['customer_app_app_store']" :error-messages="errorMessages['customer_app_app_store']"></InputField>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group border-bottom pb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <label class="form-label m-0 fw-normal" for="category-isForceUpdate">{{ $t('setting_integration_page.lbl_isforceupdate') }}</label>
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="isForceUpdate" :checked="isForceUpdate == 1 ? true : false" name="isForceUpdate" id="category-isForceUpdate" type="checkbox" v-model="isForceUpdate" />
+        </div>
+      </div>
+    </div>
+    <div v-if="isForceUpdate == 1">
+      <div class="row">
+        <div class="col-md-6">
+          <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_integration_page.lbl_version_code')" placeholder="" v-model="version_code" :error-message="errors['version_code']" :error-messages="errorMessages['version_code']"></InputField>
+        </div>
+      </div>
+    </div>
+
+    <SubmitButton :IS_SUBMITED="IS_SUBMITED"></SubmitButton>
+  </form>
+</template>
+<script setup>
+import { ref, watch } from 'vue'
+import CardTitle from '@/Setting/Components/CardTitle.vue'
+import * as yup from 'yup'
+import { useField, useForm } from 'vee-validate'
+import { STORE_URL, GET_URL } from '@/vue/constants/setting'
+import { useRequest } from '@/helpers/hooks/useCrudOpration'
+import { onMounted } from 'vue'
+import { createRequest } from '@/helpers/utilities'
+import SubmitButton from './Forms/SubmitButton.vue'
+import InputField from '@/vue/components/form-elements/InputField.vue'
+const { storeRequest } = useRequest()
+const IS_SUBMITED = ref(false)
+//  Reset Form
+const setFormData = (data) => {
+  resetForm({
+    values: {
+      is_google_login: data.is_google_login || 0,
+      is_custom_webhook_notification: data.is_custom_webhook_notification || 0,
+      is_map_key: data.is_map_key  || 0,
+      isForceUpdate: data.isForceUpdate  || 0,
+      google_maps_key: data.google_maps_key  || '',
+      version_code: data.version_code  || '',
+      is_application_link: data.is_application_link  || '',
+      customer_app_play_store: data.customer_app_play_store  || '',
+      customer_app_app_store: data.customer_app_app_store  || '',
+      custom_webhook_content_key: data.custom_webhook_content_key  || '',
+      custom_webhook_url: data.custom_webhook_url  || '',
+    }
+  })
+}
+//validation
+const validationSchema = yup.object({ 
+  google_maps_key: yup.string().test('google_maps_key', "Must be a valid Google MapKey", function(value) {
+    if(this.parent.is_map_key == '1' && !value) {
+      return false;
+    }
+    return true
+  }),
+  version_code: yup.string().test('version_code', "Minimum version code for Android is Required", function(value) {
+    if(this.parent.isForceUpdate == '1' && !value) {
+      return false;
+    }
+    return true
+  }),
+  customer_app_play_store: yup.string().test('customer_app_play_store',"Must be a valid Playstore App Key", function(value) {
+    if(this.parent.is_application_link == '1' && !value) {
+      return false;
+    }
+    return true
+  }),
+  customer_app_app_store: yup.string().test('customer_app_app_store',"Must be a valid App Key", function(value) {
+    if(this.parent.is_application_link == '1' && !value) {
+      return false;
+    }
+    return true
+  }),
+  
+})
+const { handleSubmit, errors, resetForm, validate } = useForm({validationSchema})
+const errorMessages = ref({})
+const { value: is_google_login } = useField('is_google_login')
+const { value: is_custom_webhook_notification } = useField('is_custom_webhook_notification')
+const { value: is_map_key } = useField('is_map_key')
+const { value: isForceUpdate } = useField('isForceUpdate')
+const { value: is_application_link } = useField('is_application_link')
+const { value: google_maps_key } = useField('google_maps_key')
+const { value: version_code } = useField('version_code')
+const { value: customer_app_play_store } = useField('customer_app_play_store')
+const { value: customer_app_app_store } = useField('customer_app_app_store')
+const { value: custom_webhook_content_key} = useField('custom_webhook_content_key')
+const { value: custom_webhook_url } = useField('custom_webhook_url')
+
+// watch(() => is_map_key.value, (value) => {
+//   if(value == '0') {
+//     google_maps_key.value = ''
+//   }
+// }, {deep: true})
+// watch(() => isForceUpdate.value, (value) => {
+//   if(value == '0') {
+//     version_code.value = ''
+//   }
+// }, {deep: true})
+
+
+
+// message
+const display_submit_message = (res) => {
+  if (res.status) {
+    window.successSnackbar(res.message)
+    IS_SUBMITED.value = false
+  } else {
+    window.errorSnackbar(res.message)
+    errorMessages.value = res.errors
+    IS_SUBMITED.value = false
+  }
+}
+
+//fetch data
+const data = [
+  'is_google_login',
+  'is_mobile_notification',
+  'is_map_key',
+  'isForceUpdate',
+  'is_application_link',
+  'is_custom_webhook_notification',
+]
+
+
+
+const custom_webhook_key = [
+  'custom_webhook_content_key',
+  'custom_webhook_url'
+]
+
+const customer_app = [
+  'customer_app_play_store',
+  'customer_app_app_store',
+]
+const google_map_key = [
+  'google_maps_key',
+]
+const versions_key = [
+  'version_code',
+]
+
+onMounted(() => {
+
+  const customData = [
+    ...data,
+    ...custom_webhook_key,
+    ...customer_app,
+    ...google_map_key,
+    ...versions_key,
+  ].join(",")
+
+  createRequest(GET_URL(customData)).then((response) => {
+    setFormData(response)
+  })
+})
+
+//Form Submit
+const formSubmit = handleSubmit((values) => {
+  IS_SUBMITED.value = true
+  const newValues = {}
+  Object.keys(values).forEach((key) => {
+    if(values[key] !== '') {
+      newValues[key] = values[key] || ''
+    }
+  })
+  storeRequest({
+    url: STORE_URL,
+    body: newValues
+  }).then((res) => display_submit_message(res))
+})
+
+defineProps({
+  label: { type: String, default: '' },
+  modelValue: { type: String, default: '' },
+  placeholder: { type: String, default: '' },
+  errorMessage: { type: String, default: '' },
+  errorMessages: { type: Array, default: () => [] }
+})
+</script>
